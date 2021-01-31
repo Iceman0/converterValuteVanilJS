@@ -79,7 +79,7 @@ let Home = {
         };
 
         const handleRequest = ({ data }) => {
-            const date = new Date(data.PreviousDate);
+            const date = new Date(data.Date);
             const optionsDateFormat = {
                 year: 'numeric',
                 month: '2-digit',
