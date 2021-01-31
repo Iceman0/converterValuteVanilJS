@@ -19,11 +19,11 @@ let getPostsList = async () => {
         console.log('Error getting documents', err)
     }
 }
-
+let values = [];
 let About = {
     render : async () => {
         let posts = await getPostsList();
-        let values = [];
+        values = [];
         if (posts && posts.Valute) {
             values = Object.values(posts.Valute)
         }
@@ -37,6 +37,15 @@ let About = {
             second: 'numeric'
         };
         let resultDate = date.toLocaleDateString('ru-RU', optionsDateFormat);
+        const checkedCheckbox = (e) => {
+            console.log(e);
+        };
+        let favorites = [];
+        if (values && values.length) {
+            for (let item of values) {
+                if (localStorage[item.ID]) favorites.push(item)
+            }
+        }
         let view = (values && values.length) ? `
             <section class="section">
                 <h1> Курсы валют </h1>
@@ -44,6 +53,7 @@ let About = {
                 <table class="data">
                   <tbody>
                     <tr>
+                      <th class="firstTh">Избранное</th>
                       <th class="firstTh">Цифр. код</th>
                       <th class="firstTh">Букв. код</th>
                       <th class="firstTh">Единиц</th>
@@ -51,8 +61,24 @@ let About = {
                       <th class="firstTh">Курс</th>
                     </tr>
                     <tr>
-                        ${ values.map(post =>
+                        ${ favorites.map((post, index) =>
                         ` <tr>
+                            <th style="width: 100px; text-align: center"> 
+                            <input type="checkbox" class="favorite" id=${post.ID}>
+                            </th>
+                            <th>${post.NumCode}</th>
+                            <th>${post.CharCode}</th>
+                            <th>${post.Nominal}</th>
+                            <th>${post.Name}</th>
+                            <th>${post.Value}</th>
+                          </tr>`
+                        ).join('\n ')
+                        }
+                        ${ values.filter(word => {if (!localStorage[word.ID]) return word}).map((post, index) =>
+                        ` <tr>
+                          <th style="width: 100px; text-align: center"> 
+                          <input type="checkbox" class="favorite" id=${post.ID}>
+                          </th>
                           <th>${post.NumCode}</th>
                           <th>${post.CharCode}</th>
                           <th>${post.Nominal}</th>
@@ -69,8 +95,23 @@ let About = {
             </section>
         `;
         return view;
+
     },
-    after_render: async () => {}
+    after_render: async () => {
+        let checkbox = document.querySelectorAll('.favorite');
+
+        for (let item of checkbox) {
+            if (localStorage[item.id]) item.checked = true;
+            item.addEventListener('change', function () {
+                if (this.checked && item.id) {
+                    let id = item.id;
+                    localStorage.setItem(id, values[id]);
+                } else {
+                    localStorage.removeItem(item.id);
+                }
+            });
+        }
+    }
         
 }
 
