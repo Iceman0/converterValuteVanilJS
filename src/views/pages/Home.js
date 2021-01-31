@@ -4,26 +4,10 @@
 const axios = require('axios');
 import sass from '../../css/index.sass';
 
-let getPostsList = async () => {
-    const options = {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    };
-    try {
-        const response = await fetch(`https://5bb634f6695f8d001496c082.mockapi.io/api/posts`, options)
-        const json = await response.json();
-        // console.log(json)
-        return json
-    } catch (err) {
-        console.log('Error getting documents', err)
-    }
-}
+
 
 let Home = {
     render: async () => {
-        let posts = await getPostsList()
         let view = /*html*/`
             <section class="section">
                 <div class="converter">
@@ -62,12 +46,14 @@ let Home = {
         const firstHandle = () => {
             const value = firstInput.value;
             const currency = firstSelect.options[firstSelect.selectedIndex].dataset.currency;
-            secondInput.value = value * currency;
+            const currency2 = secondSelect.options[secondSelect.selectedIndex].dataset.currency;
+            secondInput.value = parseFloat((value * currency / currency2).toFixed(2));
         };
         const secondHandle = () => {
             const value = secondInput.value;
             const currency = secondSelect.options[secondSelect.selectedIndex].dataset.currency;
-            firstInput.value = value * currency;
+            const currency1 = firstSelect.options[firstSelect.selectedIndex].dataset.currency;
+            firstInput.value = parseFloat((value * currency / currency1).toFixed(2));
         };
 
         const handleInput = () => {
@@ -103,7 +89,7 @@ let Home = {
 
                 option2.innerHTML = valute.Name;
                 option2.dataset.currency = valute.Value;
-                if (valute.CharCode === 'RUB')
+                if (valute.CharCode === 'BYN')
                     option2.selected = true;
 
                 firstSelect.append(option);
