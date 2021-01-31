@@ -28,12 +28,12 @@ const router = async () => {
     // Lazy load view element:
     const header = null || document.getElementById('header_container');
     const content = null || document.getElementById('page_container');
-    const footer = null || document.getElementById('footer_container');
+    //const footer = null || document.getElementById('footer_container');
     
     // Render the Header and footer of the page
     header.innerHTML = await Navbar.render();
     await Navbar.after_render();
-    footer.innerHTML = await Bottombar.render();
+    //footer.innerHTML = await Bottombar.render();
     await Bottombar.after_render();
 
 
